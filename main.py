@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 from os.path import join, dirname
 from lib.BucketService import BucketService
 from lib.ObjectService import ObjectService
-from lib.RequestService import RequestService
 from lib.AdminService import AdminService
 
 dotenv_path = join(dirname(__file__), '.env')
@@ -13,14 +12,16 @@ load_dotenv(dotenv_path)
 
 def main():
 	admin = AdminService()
-	print admin.enable_user('user2')
+	print admin.get_usage('admin')
+	# print admin.get_usage('user')
+	# print admin.enable_user('user2')
 	# print admin.disable_user('user2')
 	# print admin.set_max_buckets('user2', 500)
 	# print admin.enable_user_quota('user1')
 	# print admin.disable_user_quota('user1')
 	# print admin.set_user_max_size('user1', 1000)
 	# print admin.set_user_max_objects('user1', 100)
-	# print admin.get_user_quota('user1')
+	# print admin.get_user_quota('user')
 	# print admin.enable_bucket_quota('user1')
 	# print admin.disable_bucket_quota('user1')
 	# print admin.set_bucket_max_size('user1', 1200)
@@ -41,11 +42,11 @@ def main():
 	# 	os.getenv("ADMIN_ACCESS_KEY"),
 	# 	os.getenv("ADMIN_SECRET_KEY")
 	# )
-	user2_bucket = BucketService(
-		os.getenv("HOST_IP"),
-		os.getenv("USER2_ACCESS_KEY"),
-		os.getenv("USER2_SECRET_KEY")
-	)
+	# admin_bucket = BucketService(
+	# 	'http://{}:{}'.format(os.getenv("HOST"), os.getenv("PORT")),
+	# 	os.getenv("ADMIN_ACCESS_KEY"),
+	# 	os.getenv("ADMIN_SECRET_KEY")
+	# )
 	# admin_object = ObjectService(
 	# 	os.getenv("HOST_IP"),
 	# 	os.getenv("ADMIN_ACCESS_KEY"),
@@ -53,7 +54,7 @@ def main():
 	# )
 	# print admin_bucket.create('Bucket4')
 	# print admin_bucket.delete('Bucket4')
-	print user2_bucket.list()
+	# print admin_bucket.list()
 	# print admin_bucket.add_acl('admin', 'FULL_CONTROL', 'Bucket1')
 	# print admin_bucket.set_acl('user2', 'FULL_CONTROL', 'Bucket1')
 	# print admin_bucket.get_acl('Bucket1')
@@ -68,8 +69,6 @@ def main():
 	# print admin_object.get_acl('Bucket1', 'abc.png')
 	# print admin_object.download('Bucket1', 'abc.png', 'tmp/downloadfile.png')
 	# print admin_object.delete('Bucket1', 'abc.png')
-	# adminOpt = RequestService('192.168.1.102', '7480', 'admin', 'FUXDFHCKKEIZ8SEWEELD', 'DqYaUjlq2oUdlbyENnYYuBrtI2X9Yi7R1jMhuBQa')
-	# adminOpt.request('GET', 'user', '?quota&uid=$user')
 
 
 if __name__ == "__main__":

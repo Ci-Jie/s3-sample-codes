@@ -1,4 +1,4 @@
-import os, time, hmac, hashlib, base64, requests
+import os, time, hmac, hashlib, base64, requests, json
 from dotenv import load_dotenv
 from os.path import join, dirname
 
@@ -43,7 +43,7 @@ class AdminService:
 		headers = {
 			'Host': self._host,
 			'Date': date,
-			'': 'AWS {}:{}'.format(self._access_key, signature)
+			'Authorization': 'AWS {}:{}'.format(self._access_key, signature)
 		}
 		if method == 'GET':
 			res = requests.get(url, headers = headers)
@@ -69,8 +69,18 @@ class AdminService:
 
 	# example 3.3
 	def get_usage(self, username):
-		res = self._request('GET', 'usage', '?format=json&uid={}&start=2012-09-25 16:00:00&end=2018-12-04 16:00:00'.format(username))
-		return 'status code: {}\nmsg: {}'.format(res.status_code, res.content)
+		size_kb_utilized = 0
+		num_objects = 0
+		res = self._request('GET', 'bucket', '?format=json&uid={}'.format(username))
+		buckets = json.loads(res.content)
+		for bucket in buckets:
+			usage = self._request('GET', 'bucket', '?format=json&bucket={}'.format(bucket))
+			size_kb_utilized += json.loads(usage.content)['usage']['rgw.main']['size_kb_utilized']
+			num_objects += json.loads(usage.content)['usage']['rgw.main']['num_objects']
+		return 'status code: {}\nmsg: {}'.format(res.status_code, {
+			'size_kb_utilized': size_kb_utilized,
+			'num_objects': num_objects
+		})
 
 	# example 3.4
 	def get_user_quota(self, username):
