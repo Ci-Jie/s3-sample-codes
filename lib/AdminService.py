@@ -43,7 +43,7 @@ class AdminService:
 		headers = {
 			'Host': self._host,
 			'Date': date,
-			'Authorization': 'AWS {}:{}'.format(self._access_key, signature)
+			'': 'AWS {}:{}'.format(self._access_key, signature)
 		}
 		if method == 'GET':
 			res = requests.get(url, headers = headers)

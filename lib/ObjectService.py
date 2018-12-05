@@ -3,24 +3,24 @@ import boto3
 class ObjectService:
 
 	def __init__(self, host, access_key, secret_key):
-		self.__host = host
-		self.__access_key = access_key
-		self.__secret_key = secret_key
+		self._host = host
+		self._access_key = access_key
+		self._secret_key = secret_key
 
 	def resource(self):
 		return boto3.resource(
 			's3',
-			aws_access_key_id = self.__access_key,
-			aws_secret_access_key = self.__secret_key,
-			endpoint_url = self.__host,
+			aws_access_key_id = self._access_key,
+			aws_secret_access_key = self._secret_key,
+			endpoint_url = self._host,
 		)
 
 	def client(self):
 		return boto3.client(
 			's3',
-			aws_access_key_id = self.__access_key,
-			aws_secret_access_key = self.__secret_key,
-			endpoint_url = self.__host,
+			aws_access_key_id = self._access_key,
+			aws_secret_access_key = self._secret_key,
+			endpoint_url = self._host,
 		)
 
 	# example 2.1
@@ -157,7 +157,7 @@ class ObjectService:
 	# example 2.8
 	def add_acl(self, user_name, permission, bucket_name, key_name):
 		try:
-			if not self.__grant_exist(user_name, bucket_name, key_name):
+			if not self._grant_exist(user_name, bucket_name, key_name):
 				res = self.client().get_object_acl(
 					Bucket = bucket_name,
 					Key = key_name
@@ -193,7 +193,7 @@ class ObjectService:
   # example 2.9
 	def set_acl(self, user_name, permission, bucket_name, key_name):
 		try:
-			if self.__grant_exist(user_name, bucket_name, key_name):
+			if self._grant_exist(user_name, bucket_name, key_name):
 				res = self.client().get_object_acl(
 					Bucket = bucket_name,
 					Key = key_name
@@ -241,7 +241,7 @@ class ObjectService:
 		except:
 			return 'An error occurred.'
 
-	def __grant_exist(self, user_name, bucket_name, key_name):
+	def _grant_exist(self, user_name, bucket_name, key_name):
 		try:
 			res = self.client().get_object_acl(
 				Bucket = bucket_name,
