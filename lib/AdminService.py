@@ -8,15 +8,16 @@ time.tzset()
 dotenv_path = join(dirname(__file__), '../.env')
 load_dotenv(dotenv_path)
 
+
 class AdminService:
 
 	def __init__(
 		self,
-		access_key = os.getenv("ADMIN_ACCESS_KEY"),
-		secret_key = os.getenv("ADMIN_SECRET_KEY"),
-		admin_entrypoint = os.getenv("ADMIN_ENTRYPOINT"),
-		host = os.getenv("HOST"),
-		port = os.getenv("PORT")
+		access_key=os.getenv("ADMIN_ACCESS_KEY"),
+		secret_key=os.getenv("ADMIN_SECRET_KEY"),
+		admin_entrypoint=os.getenv("ADMIN_ENTRYPOINT"),
+		host=os.getenv("HOST"),
+		port=os.getenv("PORT")
 		):
 		self._access_key = access_key
 		self._secret_key = secret_key
@@ -24,7 +25,7 @@ class AdminService:
 		self._host = host
 		self._port = port
 
-	def _request(self, method, path, query, data = {}):
+	def _request(self, method, path, query, data={}):
 		url = 'http://{}:{}/{}/{}{}'.format(
 			self._host,
 			self._port,
@@ -46,11 +47,13 @@ class AdminService:
 			'Authorization': 'AWS {}:{}'.format(self._access_key, signature)
 		}
 		if method == 'GET':
-			res = requests.get(url, headers = headers)
+			res = requests.get(url, headers=headers)
 		elif method == 'PUT':
-			res = requests.put(url, headers = headers)
+			res = requests.put(url, headers=headers)
 		elif method == 'POST':
-			res = requests.post(url, headers = headers)
+			res = requests.post(url, headers=headers)
+		elif method == 'DELETE':
+			res = requests.delete(url, headers=headers)
 		return res
 
 	# example 3.1
@@ -59,7 +62,7 @@ class AdminService:
 		return 'status code: {}\nmsg: {}'.format(res.status_code, res.content)
 
 	# example 3.2
-	def create_user(self, username, email = ''):
+	def create_user(self, username, email=''):
 		res = self._request('PUT', 'user', '?format=json&uid={}&display-name={}&email={}'.format(
 			username,
 			username,
@@ -84,7 +87,8 @@ class AdminService:
 
 	# example 3.4
 	def get_user_quota(self, username):
-		res = self._request('GET', 'user', '?quota&uid={}&quota-type=user'.format(username))
+		res = self._request(
+			'GET', 'user', '?format=json&quota&uid={}&quota-type=user'.format(username))
 		return 'status code: {}\nmsg: {}'.format(res.status_code, res.content)
 
 	# example 3.5
@@ -146,3 +150,31 @@ class AdminService:
 	def disable_user(self, username):
 		res = self._request('POST', 'user', '?format=json&uid={}&suspended={}'.format(username, 1))
 		return 'status code: {}\nmsg: {}'.format(res.status_code, res.content)
+
+	# example 3.17
+	def add_bucket_read_permission(self, username):
+		res = self._request(
+			'PUT', 'user', '?caps&format=json&user-caps=buckets=read&uid={}'.format(username))
+		return 'status code: {}\nmsg: {}'.format(res.status_code, res.content)
+
+	# example 3.18
+	def add_bucket_write_permission(self, username):
+		res = self._request(
+			'PUT', 'user', '?caps&format=json&user-caps=buckets=write&uid={}'.format(username))
+		return 'status code: {}\nmsg: {}'.format(res.status_code, res.content)
+
+	# example 3.19
+	def remove_bucket_read_permission(self, username):
+		res = self._request(
+			'DELETE', 'user', '?caps&format=json&user-caps=buckets=read&uid={}'.format(username))
+		return 'status code: {}\nmsg: {}'.format(res.status_code, res.content)
+
+	# example 3.20
+	def remove_bucket_write_permission(self, username):
+		res = self._request(
+			'DELETE', 'user', '?caps&format=json&user-caps=buckets=write&uid={}'.format(username))
+		return 'status code: {}\nmsg: {}'.format(res.status_code, res.content)
+
+	# def get_traffic(self, ):
+	# 	res = self._request('GET', 'usage', '?format=json')
+	# 	return 'status code: {}\nmsg: {}'.format(res.status_code, res.content)
