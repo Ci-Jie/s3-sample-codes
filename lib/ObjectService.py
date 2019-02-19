@@ -47,7 +47,7 @@ class ObjectService:
 		)
 		if res['ResponseMetadata']['HTTPStatusCode'] == 200:
 			objects = []
-			if 'Content' in res.keys():
+			if 'Contents' in res.keys():
 				for object in res['Contents']:
 					objects.append({
 						'Key': object['Key'],

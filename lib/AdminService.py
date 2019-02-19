@@ -78,7 +78,7 @@ class AdminService:
 		buckets = json.loads(res.content)
 		for bucket in buckets:
 			usage = self._request('GET', 'bucket', '?format=json&bucket={}'.format(bucket))
-			if 'rgw.main' in json.loads(usage.content):
+			if len(json.loads(usage.content)['usage']):
 				size_kb_utilized += json.loads(usage.content)['usage']['rgw.main']['size_kb_utilized']
 				num_objects += json.loads(usage.content)['usage']['rgw.main']['num_objects']
 		return 'status code: {}\nmsg: {}'.format(res.status_code, {
